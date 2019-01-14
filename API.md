@@ -2,16 +2,16 @@
 
 - [Install package](#install-package)
 - [Usage examples](#usage-examples)
-    - [Setup the test account](#setup-the-test-account)
-    - [Get the latest block number](#get-the-latest-block-number)
-    - [Create a new account with a private key](#create-a-new-account-with-a-private-key)
-    - [Create a new account with RPC](#create-a-new-account-with-rpc)
-    - [Get the balance of an account](#get-the-balance-of-an-account)
-    - [Send a payment transaction via sendTransaction](#send-a-payment-transaction-via-sendtransaction)
-    - [Send a payment transaction via sendSignedTransaction](#send-a-payment-transaction-via-sendsignedtransaction)
-    - [Create an asset transfer address](#create-an-asset-transfer-address)
-    - [Mint a new asset](#mint-a-new-asset)
-    - [Transfer assets](#transfer-assets)
+  - [Setup the test account](#setup-the-test-account)
+  - [Get the latest block number](#get-the-latest-block-number)
+  - [Create a new account with a private key](#create-a-new-account-with-a-private-key)
+  - [Create a new account with RPC](#create-a-new-account-with-rpc)
+  - [Get the balance of an account](#get-the-balance-of-an-account)
+  - [Send a payment transaction via sendTransaction](#send-a-payment-transaction-via-sendtransaction)
+  - [Send a payment transaction via sendSignedTransaction](#send-a-payment-transaction-via-sendsignedtransaction)
+  - [Create an asset transfer address](#create-an-asset-transfer-address)
+  - [Mint a new asset](#mint-a-new-asset)
+  - [Transfer assets](#transfer-assets)
 - [SDK modules](#sdk-modules)
 
 # Install package
@@ -29,7 +29,7 @@ Make sure that your CodeChain RPC server is listening. In the examples, we assum
 
 ## Setup the test account
 
-Before you begin to meet various examples, you need to setup the account. The given account below(`tccqzn9jjm3j6qg69smd7cn0eup4w7z2yu9my9a2k78`) holds 100000 CCC at the genesis block. It's a sufficient amount to pay for the transaction fee.
+Before you begin to meet various examples, you need to setup the account. The given account below(`tccqzn9jjm3j6qg69smd7cn0eup4w7z2yu9my9a2k78`) holds 100000 CCC at the genesis block. It's a sufficient quantity to pay for the transaction fee.
 
 ```javascript
 var SDK = require("codechain-sdk");
@@ -104,7 +104,7 @@ sdk.rpc.chain
   .getBalance("tccqzn9jjm3j6qg69smd7cn0eup4w7z2yu9my9a2k78")
   .then(function(balance) {
     // the balance is a U256 instance at this moment. Use toString() to print it out.
-    console.log(balance.toString()); // the amount of CCC that the account has.
+    console.log(balance.toString()); // the quantity of CCC that the account has.
   });
 ```
 
@@ -120,7 +120,7 @@ var sdk = new SDK({ server: "http://localhost:8080" });
 
 var tx = sdk.core.createPaymentTransaction({
   recipient: "tccqruq09sfgax77nj4gukjcuq69uzeyv0jcs7vzngg",
-  amount: 10000
+  quantity: 10000
 });
 
 sdk.rpc.chain
@@ -147,7 +147,7 @@ var sdk = new SDK({ server: "http://localhost:8080" });
 
 var tx = sdk.core.createPaymentTransaction({
   recipient: "tccqruq09sfgax77nj4gukjcuq69uzeyv0jcs7vzngg",
-  amount: 10000
+  quantity: 10000
 });
 
 var account = "tccqzn9jjm3j6qg69smd7cn0eup4w7z2yu9my9a2k78";
@@ -215,7 +215,7 @@ var tx = sdk.core.createAssetMintTransaction({
       description: "...",
       icon_url: "..."
     }),
-    amount: 100000000
+    supply: 100000000
   },
   recipient: address
 });
