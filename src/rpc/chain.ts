@@ -948,27 +948,62 @@ export class ChainRpc {
     }
 
     /**
-     * Gets pending transactions.
+     * Gets pending transactions whose insertion timestamps are in the given range.
+     * @param from The lower bound of the insertion timestamp.
+     * @param to The upper bound of the insertion timestamp.
      * @returns List of SignedTransaction, with each tx has null for blockNumber/blockHash/transactionIndex.
      */
-    public getPendingTransactions(): Promise<SignedTransaction[]> {
+    public getPendingTransactions(
+        from?: number | null,
+        to?: number | null
+    ): Promise<{
+        transactions: SignedTransaction[];
+        lastTimestamp: number | null;
+    }> {
+        if (from != null && !isNonNegativeInterger(from)) {
+            throw Error(
+                `Expected the first argument of getPendingTransactions to be a non-negative integer but found ${from}`
+            );
+        }
+        if (to != null && !isNonNegativeInterger(to)) {
+            throw Error(
+                `Expected the second argument of getPendingTransactions to be a non-negative integer but found ${to}`
+            );
+        }
         return new Promise((resolve, reject) => {
             this.rpc
-                .sendRpcRequest("chain_getPendingTransactions", [])
+                .sendRpcRequest("chain_getPendingTransactions", [from, to])
                 .then(result => {
-                    if (!Array.isArray(result)) {
-                        return reject(
-                            Error(
-                                `Expected chain_getPendingTransactions to return an array but it returned ${result}`
-                            )
-                        );
-                    }
                     try {
-                        resolve(result.map(fromJSONToSignedTransaction));
+                        const resultTransactions = result.transactions;
+                        const resultLastTimestamp = result.lastTimestamp;
+                        if (!Array.isArray(resultTransactions)) {
+                            return reject(
+                                Error(
+                                    `Expected chain_getPendingTransactions to return an object whose property "transactions" is of array type but it is ${resultTransactions}`
+                                )
+                            );
+                        }
+                        if (
+                            resultLastTimestamp !== null &&
+                            typeof resultLastTimestamp !== "number"
+                        ) {
+                            return reject(
+                                Error(
+                                    `Expected chain_getPendingTransactions to return an object containing a number but it returned ${resultLastTimestamp}`
+                                )
+                            );
+                        }
+                        resolve({
+                            transactions: resultTransactions.map(
+                                fromJSONToSignedTransaction
+                            ),
+                            lastTimestamp: resultLastTimestamp
+                        });
                     } catch (e) {
                         reject(
                             Error(
-                                `Expected chain_getPendingTransactions to return an array of JSON of SignedTransaction, but an error occurred: ${e.toString()}`
+                                `Expected chain_getPendingTransactions to return an object who has transactions and lastTimestamp properties, but an error occurred: ${e.toString()}`
                             )
                         );
                     }
